@@ -1,1 +1,1 @@
-# Dynamic-Emotion-Decoding-ForrestGump-project-
+# ForrestGump-project
