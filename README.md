@@ -1,119 +1,76 @@
-Neuroimaging Analysis of Naturalistic Stimuli: Forrest Gump Project
-A Multi-modal fMRI Analysis of the "Forrest Gump" Movie Watching Task
+# Neuroimaging Analysis of Naturalistic Stimuli: Forrest Gump Project
 
-Author: Ziyu Wang (2025)
+> **A Multi-modal fMRI Analysis of the "Forrest Gump" Movie Watching Task**
 
-Institution: Sino-Danish Center (SDC) / Institute of Biophysics, CAS
+**Author:** Ziyu Wang (Master's Project, 2025)  
+**Institution:** Sino-Danish Center (SDC) / Institute of Biophysics, Chinese Academy of Sciences (CAS)
 
-📖 Overview
-This repository contains the code and analysis pipeline for a neuroimaging project investigating brain dynamics during naturalistic stimuli. Utilizing the StudyForrest dataset (3T fMRI extension), this project analyzes data from 15 participants watching the movie Forrest Gump.
+---
 
-Key features of this project include:
+## 📖 Project Overview
 
-Multi-modal Alignment: Synchronization of fMRI time-series, movie stimuli, and continuous emotion ratings (TR = 2s).
+This repository hosts the code and analysis pipeline for a neuroimaging master's project investigating brain dynamics under naturalistic conditions. Utilizing the **StudyForrest** dataset (3T fMRI extension), this project analyzes data from **15 participants** watching the movie *Forrest Gump*.
 
-Dimensionality Reduction: Using UMAP to project high-dimensional whole-brain signals into a low-dimensional state space.
+The core objective is to map high-dimensional brain activity into low-dimensional state trajectories and explore the synchronization between neural responses, movie content, and emotional experiences.
 
-Inter-Subject Synchronization: visualizing the similarity of brain states across participants dynamically over time.
+### Key Features
+* **Multi-modal Alignment:** Precise synchronization of fMRI time-series, movie video stimuli, and continuous emotion ratings (TR = 2s).
+* **Dimensionality Reduction:** Implementation of **UMAP** to project whole-brain signals into a 3D latent space.
+* **Dynamic Synchronization:** Visualization of inter-subject synchronization (ISS) evolving over the 2-hour movie.
+* **Emotion Decoding:** Analysis of 6 basic emotions and their PCA components (Polarity, Complexity, Intensity).
 
-Emotion Decoding: correlating basic emotion ratings (and their PCA components) with neural trajectories.
+---
 
-⚠️ Data Availability & Disclaimer
-Note: This repository does not contain the raw fMRI data or the movie files due to copyright and size constraints.
+## ⚠️ Data Availability & Disclaimer
 
-All data used in this project is publicly available from the following sources:
+**Important:** This repository **does not** contain raw fMRI data or movie files due to copyright and storage limitations. All data used in this project is publicly available.
 
-fMRI Data (3T Extension): The dataset (15 subjects) can be downloaded from OpenNeuro or the StudyForrest website.
+To reproduce the results, please acquire the data from the official sources:
 
-Reference: A studyforrest extension, simultaneous fMRI and eye gaze recordings during prolonged natural stimulation (Scientific Data, 2016)
+1.  **fMRI Data (3T Extension)** * **Source:** [StudyForrest.org](http://studyforrest.org) or OpenNeuro.
+    * **Description:** 15 subjects, 2-hour movie watching task, TR=2s.
+    * *Reference:* [Hanke et al., Scientific Data (2016)](https://www.nature.com/articles/sdata201692)
 
-Emotion Annotations: Continuous ratings for 6 basic emotions provided by 12 observers.
+2.  **Emotion Annotations** * **Source:** [OSF Repository (Lettieri et al.)](https://osf.io/tzpdf/)
+    * **Description:** Continuous ratings for Happiness, Surprise, Fear, Sadness, Anger, and Disgust (10Hz).
+    * *Reference:* [Lettieri et al., Nature Communications (2019)](https://www.nature.com/articles/ncomms10608)
 
-Source: OSF Repository
+---
 
-Reference: Emotionotopy in the human right temporo-parietal cortex (Nature Communications)
+## ⚙️ Methodology
 
-To run the code in this repository, you must download the datasets and update the file paths in the configuration scripts.
+### 1. Data Preprocessing
+* **Pipeline:** Standard preprocessing using **fMRIPrep (v23.2.1)** (Motion correction, Slice timing, MNI normalization).
+* **Overlap Removal:** Following the StudyForrest protocol, overlapping segments between the 8 movie runs were removed to create a concatenated time-series.
+    * *Removed:* First 3 TRs (6s) and last 5 TRs (10s) of overlapping cuts.
+    * *Final Duration:* 3543 TRs (approx. 2 hours).
 
-⚙️ Methodology
-1. Data Preprocessing
-fMRIPrep (v23.2.1): Standard preprocessing pipeline including slice timing correction, motion correction, and spatial normalization (MNI152NLin6Asym).
+### 2. Emotion Analysis (PCA)
+Continuous ratings were downsampled to 0.5Hz to match fMRI TRs. **Principal Component Analysis (PCA)** revealed three latent dimensions explaining ~85% of the variance:
+* **PC1 (45%):** Polarity (Positive vs. Negative valence).
+* **PC2 (24%):** Complexity (Cognitive demand of the emotion).
+* **PC3 (16%):** Intensity (Arousal level).
 
-Time-series Extraction:
+### 3. UMAP & Synchronization
+* **Input:** Stacked time-series arrays from 15 subjects (Shape: `53145 x N_ROIs`).
+* **Algorithm:** **UMAP** (Uniform Manifold Approximation and Projection) reduced data to 3 components.
+* **Metric:** Inter-subject synchronization was quantified by calculating the Euclidean distance of each subject to the group centroid in the low-dimensional space.
 
-Data was segmented into 8 runs corresponding to movie cuts.
+---
 
-Overlap Removal: Following the StudyForrest protocols, overlapping TRs at the beginning and end of each run were removed to create a continuous time-series (Total TRs = 3543).
+## 📊 Visualization Highlights
 
-Denoising: Nuisance regression (motion parameters) and temporal filtering.
+### Brain State Trajectory
+We generated dynamic 3D animations to visualize how participants' brain states evolve.
+* **Points:** Represent individual subjects.
+* **Color:** Represents the current emotional intensity or movie scene cluster.
+* **Output:** `trajectory_animation.html` (Interactive 3D plot).
 
-2. Emotion Annotation Processing
-Raw ratings for Happiness, Surprise, Fear, Sadness, Anger, and Disgust (10Hz) were downsampled to match the fMRI TR (0.5Hz / 2s).
-
-PCA Analysis: Performed on emotion ratings, revealing 3 main components explaining ~85% of variance:
-
-Polarity (Positive/Negative)
-
-Complexity
-
-Intensity
-
-3. Dimensionality Reduction (UMAP)
-Whole-brain functional connectivity (or ROI-based signals) from 15 subjects were stacked.
-
-UMAP (Uniform Manifold Approximation and Projection) was applied to reduce the dimensions to 3 components.
-
-This allows for the visualization of "Brain State Trajectories" in a 3D space.
-
-4. Synchronization Metrics
-Calculated the Euclidean distance of each subject to the group centroid in the UMAP space.
-
-Closer distance indicates higher inter-subject synchronization during specific movie scenes.
-
-📊 Visualization Highlights
-Brain State Trajectory Animation
-One of the core outputs of this project is a dynamic HTML animation showing how the 15 subjects' brain states evolve over the 2-hour movie.
-
-Visual: Points represent subjects in the UMAP space.
-
-Dynamics: Points cluster together during highly engaging emotional scenes (high synchronization) and disperse during resting or transitional scenes.
-
-(You can find the trajectory_animation.html in the results folder)
-
-Movie-fMRI-Emotion Alignment
-The code enables querying specific Time Repetition (TR) points to retrieve:
-
-The exact frame/timestamp of the movie.
-
-The corresponding fMRI signal state.
-
-The intensity of the 6 basic emotions at that moment.
-
-
-Plaintext
-
-> Movie: forrest_04.mp4 (Run 4)
-> Emotion Ratings: 
-  Happiness: 0.00 | Surprise: 8.78 | Fear: 31.94 | Sadness: 22.83
-
-💻 Requirements
-To run the analysis notebooks, you will need the following Python packages:
-
-numpy, pandas, scipy
-
-nibabel, nilearn (for neuroimaging data)
-
-umap-learn (for dimensionality reduction)
-
-scikit-learn (for PCA and clustering)
-
-matplotlib, plotly (for visualization)
-
-h5py
-
-📚 References
-Dataset: Hanke et al. (2016). A studyforrest extension, simultaneous fMRI and eye gaze recordings during prolonged natural stimulation. Scientific Data.
-
-Original 7T Data: Hanke et al. (2014). A high-resolution 7-Tesla fMRI dataset from complex natural stimulation with an audio movie. Scientific Data.
-
-Emotion Processing: Lettieri et al. (2019). Emotionotopy in the human right temporo-parietal cortex. Nature Communications.
+### Scene-Emotion Query System
+The codebase includes a utility to query specific timepoints:
+```python
+# Example: Querying the 5th TR
+movie_file, time_point = get_movie_info(tr=5)
+# Output:
+# > Movie: forrest_04.mp4 (Run 4) at 00:10
+# > Emotion: Fear (High), Happiness (Low)
