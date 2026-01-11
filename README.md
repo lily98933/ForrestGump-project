@@ -2,7 +2,7 @@
 
 > **A Multi-modal fMRI Analysis of the "Forrest Gump" Movie Watching Task**
 
-**Author:** Ziyu Wang (Master's Project, 2025)  
+**Author:** Ziyu Wang (2025)  
 **Institution:** Sino-Danish Center (SDC) / Institute of Biophysics, Chinese Academy of Sciences (CAS)
 
 ---
@@ -63,7 +63,6 @@ Continuous ratings were downsampled to 0.5Hz to match fMRI TRs. **Principal Comp
 ### Brain State Trajectory
 We generated dynamic 3D animations to visualize how participants' brain states evolve.
 * **Points:** Represent individual subjects.
-* **Color:** Represents the current emotional intensity or movie scene cluster.
 * **Output:** `trajectory_animation.html` (Interactive 3D plot).
 
 ### Scene-Emotion Query System
